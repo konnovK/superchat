@@ -1,0 +1,61 @@
+definitions:
+  entity.Chat:
+    properties:
+      author:
+        type: string
+      id:
+        type: integer
+      lastMessages:
+        items:
+          $ref: '#/definitions/entity.Message'
+        type: array
+      tags:
+        items:
+          $ref: '#/definitions/entity.ChatTag'
+        type: array
+      timeToLive:
+        type: integer
+      title:
+        type: string
+    type: object
+  entity.ChatTag:
+    properties:
+      title:
+        type: string
+    type: object
+  entity.Message:
+    properties:
+      author:
+        type: string
+      text:
+        type: string
+      time:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /chat/active:
+    get:
+      description: get all active chats at the moment
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/entity.Chat'
+              type: array
+            type: array
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: get active chats
+      tags:
+      - chat
+swagger: "2.0"
