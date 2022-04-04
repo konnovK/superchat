@@ -13,11 +13,11 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	dbUser := os.Getenv("SuperchatDbUser")
-	dbPassword := os.Getenv("SuperchatDbPassword")
-	dbHost := os.Getenv("SuperchatDbHost")
-	dbPort := os.Getenv("SuperchatDbPort")
-	dbName := os.Getenv("SuperchatDbName")
+	dbUser := os.Getenv("CHAT_DB_USER")
+	dbPassword := os.Getenv("CHAT_DB_PASSWORD")
+	dbHost := os.Getenv("CHAT_DB_HOST")
+	dbPort := os.Getenv("CHAT_DB_PORT")
+	dbName := os.Getenv("CHAT_DB_NAME")
 
 	return &Config{
 		DbUser:     dbUser,
