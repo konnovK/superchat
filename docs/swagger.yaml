@@ -19,7 +19,7 @@ definitions:
     type: object
   entity.ChatResponse:
     properties:
-      author:
+      creator:
         type: string
       id:
         type: integer
@@ -52,9 +52,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: add new chat
+      description: Create new chat
       parameters:
-      - description: Add chat
+      - description: Create chat
         in: body
         name: chat
         required: true
@@ -66,21 +66,19 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/entity.ChatResponse'
-            type: array
+            $ref: '#/definitions/entity.ChatResponse'
         "400":
           description: ""
         "404":
           description: ""
         "500":
           description: ""
-      summary: Add new chat
+      summary: Create new chat
       tags:
       - chat
   /chat/{id}/message:
     get:
-      description: get all messages in chat by chat id
+      description: Get all messages in chat by chat id
       parameters:
       - description: Chat ID
         in: path
@@ -94,9 +92,7 @@ paths:
           description: OK
           schema:
             items:
-              items:
-                $ref: '#/definitions/entity.MessageResponse'
-              type: array
+              $ref: '#/definitions/entity.MessageResponse'
             type: array
         "400":
           description: ""
@@ -127,9 +123,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/entity.MessageResponse'
-            type: array
+            $ref: '#/definitions/entity.MessageResponse'
         "400":
           description: ""
         "404":
@@ -141,7 +135,7 @@ paths:
       - chat
   /chat/active:
     get:
-      description: get all active chats at the moment
+      description: Get all active chats at the moment
       produces:
       - application/json
       responses:
@@ -149,9 +143,7 @@ paths:
           description: OK
           schema:
             items:
-              items:
-                $ref: '#/definitions/entity.ChatResponse'
-              type: array
+              $ref: '#/definitions/entity.ChatResponse'
             type: array
         "400":
           description: ""

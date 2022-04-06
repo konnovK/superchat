@@ -31,7 +31,7 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 // @Description Get all active chats at the moment
 // @Tags chat
 // @Produce json
-// @Success 200 {array} entity.GetActiveChatsResponse
+// @Success 200 {object} entity.GetActiveChatsResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500
@@ -48,7 +48,7 @@ func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 // @Tags chat
 // @Produce json
 // @Param        id   path      int  true  "Chat ID"
-// @Success 200 {array} entity.GetMessagesByChatIdResponse
+// @Success 200 {object} entity.GetMessagesByChatIdResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500
@@ -66,7 +66,7 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 // @Accept json
 // @Produce json
 // @Param chat body entity.AcceptedChat true "Create chat"
-// @Success 200 {array} entity.ChatResponse
+// @Success 200 {object} entity.ChatResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500
@@ -84,7 +84,7 @@ func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Param        id   path      int  true  "Chat ID"
 // @Param message body entity.AcceptedMessage true "Send message"
-// @Success 200 {array} entity.MessageResponse
+// @Success 200 {object} entity.MessageResponse
 // @Failure 400
 // @Failure 404
 // @Failure 500

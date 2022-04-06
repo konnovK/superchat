@@ -7,7 +7,7 @@ type GetActiveChatsResponse []ChatResponse
 type ChatResponse struct {
 	ID          uint
 	Title       string
-	Author      string
+	Creator     string
 	TTL         int
 	Tags        []string
 	LastMessage []MessageResponse

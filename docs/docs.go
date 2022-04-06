@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/chat": {
             "post": {
-                "description": "add new chat",
+                "description": "Create new chat",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,10 +28,10 @@ const docTemplate = `{
                 "tags": [
                     "chat"
                 ],
-                "summary": "Add new chat",
+                "summary": "Create new chat",
                 "parameters": [
                     {
-                        "description": "Add chat",
+                        "description": "Create chat",
                         "name": "chat",
                         "in": "body",
                         "required": true,
@@ -40,6 +40,35 @@ const docTemplate = `{
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/chat/active": {
+            "get": {
+                "description": "Get all active chats at the moment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Get active chats",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -62,44 +91,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/chat/active": {
-            "get": {
-                "description": "get all active chats at the moment",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chat"
-                ],
-                "summary": "Get active chats",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/entity.ChatResponse"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": ""
-                    },
-                    "404": {
-                        "description": ""
-                    },
-                    "500": {
-                        "description": ""
-                    }
-                }
-            }
-        },
         "/chat/{id}/message": {
             "get": {
-                "description": "get all messages in chat by chat id",
+                "description": "Get all messages in chat by chat id",
                 "produces": [
                     "application/json"
                 ],
@@ -122,10 +116,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/entity.MessageResponse"
-                                }
+                                "$ref": "#/definitions/entity.MessageResponse"
                             }
                         }
                     },
@@ -171,10 +162,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.MessageResponse"
-                            }
+                            "$ref": "#/definitions/entity.MessageResponse"
                         }
                     },
                     "400": {
@@ -222,7 +210,7 @@ const docTemplate = `{
         "entity.ChatResponse": {
             "type": "object",
             "properties": {
-                "author": {
+                "creator": {
                     "type": "string"
                 },
                 "id": {
