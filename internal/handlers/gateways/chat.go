@@ -59,7 +59,7 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(messages)
 }
 
-// GetMessagesByChatId godoc
+// CreateChat godoc
 // @Summary Create new chat
 // @Description Create new chat
 // @Tags chat
@@ -77,7 +77,7 @@ func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(chat)
 }
 
-// GetMessagesByChatId godoc
+// SendMessage godoc
 // @Summary Send message to chat
 // @Description Send message to chat by chat id
 // @Tags chat
