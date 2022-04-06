@@ -1,33 +1,46 @@
 definitions:
-  entity.Chat:
+  entity.AcceptedChat:
+    properties:
+      author:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      ttl:
+        type: integer
+    type: object
+  entity.AcceptedMessage:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.ChatResponse:
     properties:
       author:
         type: string
       id:
         type: integer
-      lastMessages:
+      lastMessage:
         items:
-          $ref: '#/definitions/entity.Message'
+          $ref: '#/definitions/entity.MessageResponse'
         type: array
       tags:
         items:
-          $ref: '#/definitions/entity.ChatTag'
+          type: string
         type: array
-      timeToLive:
+      title:
+        type: string
+      ttl:
         type: integer
-      title:
-        type: string
     type: object
-  entity.ChatTag:
+  entity.MessageResponse:
     properties:
-      title:
+      message:
         type: string
-    type: object
-  entity.Message:
-    properties:
-      author:
-        type: string
-      text:
+      sender:
         type: string
       time:
         type: string
@@ -35,6 +48,97 @@ definitions:
 info:
   contact: {}
 paths:
+  /chat:
+    post:
+      consumes:
+      - application/json
+      description: add new chat
+      parameters:
+      - description: Add chat
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/entity.AcceptedChat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ChatResponse'
+            type: array
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Add new chat
+      tags:
+      - chat
+  /chat/{id}/message:
+    get:
+      description: get all messages in chat by chat id
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/entity.MessageResponse'
+              type: array
+            type: array
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Get all messages in chat
+      tags:
+      - chat
+    post:
+      description: Send message to chat by chat id
+      parameters:
+      - description: Chat ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Send message
+        in: body
+        name: message
+        required: true
+        schema:
+          $ref: '#/definitions/entity.AcceptedMessage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.MessageResponse'
+            type: array
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Send message to chat
+      tags:
+      - chat
   /chat/active:
     get:
       description: get all active chats at the moment
@@ -46,7 +150,7 @@ paths:
           schema:
             items:
               items:
-                $ref: '#/definitions/entity.Chat'
+                $ref: '#/definitions/entity.ChatResponse'
               type: array
             type: array
         "400":
@@ -55,7 +159,7 @@ paths:
           description: ""
         "500":
           description: ""
-      summary: get active chats
+      summary: Get active chats
       tags:
       - chat
 swagger: "2.0"

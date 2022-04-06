@@ -16,6 +16,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/chat": {
+            "post": {
+                "description": "add new chat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Add new chat",
+                "parameters": [
+                    {
+                        "description": "Add chat",
+                        "name": "chat",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AcceptedChat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.ChatResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/chat/active": {
             "get": {
                 "description": "get all active chats at the moment",
@@ -25,7 +71,7 @@ const docTemplate = `{
                 "tags": [
                     "chat"
                 ],
-                "summary": "get active chats",
+                "summary": "Get active chats",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -34,8 +80,100 @@ const docTemplate = `{
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/entity.Chat"
+                                    "$ref": "#/definitions/entity.ChatResponse"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/chat/{id}/message": {
+            "get": {
+                "description": "get all messages in chat by chat id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Get all messages in chat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Chat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/entity.MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "description": "Send message to chat by chat id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Send message to chat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Chat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Send message",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.AcceptedMessage"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.MessageResponse"
                             }
                         }
                     },
@@ -53,7 +191,35 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entity.Chat": {
+        "entity.AcceptedChat": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "ttl": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.AcceptedMessage": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ChatResponse": {
             "type": "object",
             "properties": {
                 "author": {
@@ -62,41 +228,33 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "lastMessages": {
+                "lastMessage": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Message"
+                        "$ref": "#/definitions/entity.MessageResponse"
                     }
                 },
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.ChatTag"
+                        "type": "string"
                     }
                 },
-                "timeToLive": {
+                "title": {
+                    "type": "string"
+                },
+                "ttl": {
                     "type": "integer"
-                },
-                "title": {
-                    "type": "string"
                 }
             }
         },
-        "entity.ChatTag": {
+        "entity.MessageResponse": {
             "type": "object",
             "properties": {
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Message": {
-            "type": "object",
-            "properties": {
-                "author": {
+                "message": {
                     "type": "string"
                 },
-                "text": {
+                "sender": {
                     "type": "string"
                 },
                 "time": {
