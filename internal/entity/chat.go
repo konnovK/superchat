@@ -16,18 +16,19 @@ type ChatResponse struct {
 type MessageResponse struct {
 	Sender  string
 	Message string
-	Time    time.Time
+	SentAt  time.Time
 }
 
 type GetMessagesByChatIdResponse []MessageResponse
 
-type AcceptedChat struct {
+type CreateChatRequest struct {
 	Title  string
 	Author string
 	TTL    int
 	Tags   []string
 }
 
-type AcceptedMessage struct {
+type SendMessageRequest struct {
+	Sender  string
 	Message string
 }
