@@ -36,7 +36,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.AcceptedChat"
+                            "$ref": "#/definitions/entity.CreateChatRequest"
                         }
                     }
                 ],
@@ -154,7 +154,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.AcceptedMessage"
+                            "$ref": "#/definitions/entity.SendMessageRequest"
                         }
                     }
                 ],
@@ -179,34 +179,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entity.AcceptedChat": {
-            "type": "object",
-            "properties": {
-                "author": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "ttl": {
-                    "type": "integer"
-                }
-            }
-        },
-        "entity.AcceptedMessage": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.ChatResponse": {
             "type": "object",
             "properties": {
@@ -236,6 +208,26 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.CreateChatRequest": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "ttl": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.MessageResponse": {
             "type": "object",
             "properties": {
@@ -245,7 +237,18 @@ const docTemplate = `{
                 "sender": {
                     "type": "string"
                 },
-                "time": {
+                "sentAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "sender": {
                     "type": "string"
                 }
             }

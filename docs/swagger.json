@@ -24,7 +24,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.AcceptedChat"
+                            "$ref": "#/definitions/entity.CreateChatRequest"
                         }
                     }
                 ],
@@ -142,7 +142,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.AcceptedMessage"
+                            "$ref": "#/definitions/entity.SendMessageRequest"
                         }
                     }
                 ],
@@ -167,34 +167,6 @@
         }
     },
     "definitions": {
-        "entity.AcceptedChat": {
-            "type": "object",
-            "properties": {
-                "author": {
-                    "type": "string"
-                },
-                "tags": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "title": {
-                    "type": "string"
-                },
-                "ttl": {
-                    "type": "integer"
-                }
-            }
-        },
-        "entity.AcceptedMessage": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.ChatResponse": {
             "type": "object",
             "properties": {
@@ -224,6 +196,26 @@
                 }
             }
         },
+        "entity.CreateChatRequest": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "ttl": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.MessageResponse": {
             "type": "object",
             "properties": {
@@ -233,7 +225,18 @@
                 "sender": {
                     "type": "string"
                 },
-                "time": {
+                "sentAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "sender": {
                     "type": "string"
                 }
             }

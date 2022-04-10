@@ -65,7 +65,7 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 // @Tags chat
 // @Accept json
 // @Produce json
-// @Param chat body entity.AcceptedChat true "Create chat"
+// @Param chat body entity.CreateChatRequest true "Create chat"
 // @Success 200 {object} entity.ChatResponse
 // @Failure 400
 // @Failure 404
@@ -83,7 +83,7 @@ func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 // @Tags chat
 // @Produce json
 // @Param        id   path      int  true  "Chat ID"
-// @Param message body entity.AcceptedMessage true "Send message"
+// @Param message body entity.SendMessageRequest true "Send message"
 // @Success 200 {object} entity.MessageResponse
 // @Failure 400
 // @Failure 404

@@ -1,22 +1,4 @@
 definitions:
-  entity.AcceptedChat:
-    properties:
-      author:
-        type: string
-      tags:
-        items:
-          type: string
-        type: array
-      title:
-        type: string
-      ttl:
-        type: integer
-    type: object
-  entity.AcceptedMessage:
-    properties:
-      message:
-        type: string
-    type: object
   entity.ChatResponse:
     properties:
       creator:
@@ -36,13 +18,33 @@ definitions:
       ttl:
         type: integer
     type: object
+  entity.CreateChatRequest:
+    properties:
+      author:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      ttl:
+        type: integer
+    type: object
   entity.MessageResponse:
     properties:
       message:
         type: string
       sender:
         type: string
-      time:
+      sentAt:
+        type: string
+    type: object
+  entity.SendMessageRequest:
+    properties:
+      message:
+        type: string
+      sender:
         type: string
     type: object
 info:
@@ -59,7 +61,7 @@ paths:
         name: chat
         required: true
         schema:
-          $ref: '#/definitions/entity.AcceptedChat'
+          $ref: '#/definitions/entity.CreateChatRequest'
       produces:
       - application/json
       responses:
@@ -116,7 +118,7 @@ paths:
         name: message
         required: true
         schema:
-          $ref: '#/definitions/entity.AcceptedMessage'
+          $ref: '#/definitions/entity.SendMessageRequest'
       produces:
       - application/json
       responses:
