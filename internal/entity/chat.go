@@ -2,20 +2,33 @@ package entity
 
 import "time"
 
-type GetActiveChatsResponse []Chat
-type Chat struct {
-	ID           int
-	Title        string
-	Author       string
-	TimeToLive   int
-	Tags         []ChatTag
-	LastMessages []Message
+type GetActiveChatsResponse []ChatResponse
+
+type ChatResponse struct {
+	ID          uint
+	Title       string
+	Creator     string
+	TTL         int
+	Tags        []string
+	LastMessage []MessageResponse
 }
-type ChatTag struct {
-	Title string
+
+type MessageResponse struct {
+	Sender  string
+	Message string
+	SentAt  time.Time
 }
-type Message struct {
+
+type GetMessagesByChatIdResponse []MessageResponse
+
+type CreateChatRequest struct {
+	Title  string
 	Author string
-	Text   string
-	Time   time.Time
+	TTL    int
+	Tags   []string
+}
+
+type SendMessageRequest struct {
+	Sender  string
+	Message string
 }

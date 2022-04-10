@@ -4,27 +4,153 @@
         "contact": {}
     },
     "paths": {
-        "/chat/active": {
-            "get": {
-                "description": "get all active chats at the moment",
+        "/chat": {
+            "post": {
+                "description": "Create new chat",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "chat"
                 ],
-                "summary": "get active chats",
+                "summary": "Create new chat",
+                "parameters": [
+                    {
+                        "description": "Create chat",
+                        "name": "chat",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.CreateChatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/chat/active": {
+            "get": {
+                "description": "Get all active chats at the moment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Get active chats",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/entity.Chat"
-                                }
+                                "$ref": "#/definitions/entity.ChatResponse"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/chat/{id}/message": {
+            "get": {
+                "description": "Get all messages in chat by chat id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Get all messages in chat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Chat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.MessageResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "description": "Send message to chat by chat id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Send message to chat",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Chat ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Send message",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.SendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.MessageResponse"
                         }
                     },
                     "400": {
@@ -41,53 +167,76 @@
         }
     },
     "definitions": {
-        "entity.Chat": {
+        "entity.ChatResponse": {
             "type": "object",
             "properties": {
-                "author": {
+                "creator": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "lastMessages": {
+                "lastMessage": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Message"
+                        "$ref": "#/definitions/entity.MessageResponse"
                     }
                 },
                 "tags": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.ChatTag"
+                        "type": "string"
                     }
                 },
-                "timeToLive": {
-                    "type": "integer"
+                "title": {
+                    "type": "string"
                 },
-                "title": {
-                    "type": "string"
+                "ttl": {
+                    "type": "integer"
                 }
             }
         },
-        "entity.ChatTag": {
-            "type": "object",
-            "properties": {
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Message": {
+        "entity.CreateChatRequest": {
             "type": "object",
             "properties": {
                 "author": {
                     "type": "string"
                 },
-                "text": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
                     "type": "string"
                 },
-                "time": {
+                "ttl": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "sender": {
+                    "type": "string"
+                },
+                "sentAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "sender": {
                     "type": "string"
                 }
             }
