@@ -10,6 +10,7 @@ type ChatRepository interface {
 	FindAll() (entity.Chats, error)
 	Create(target *entity.Chat) error
 	Update(conditions *entity.Chat, target *entity.Chat) error
+	Delete(target *entity.Chat) error
 }
 
 type Chat struct {
@@ -51,5 +52,9 @@ func (c *Chat) Update(conditions *entity.Chat, target *entity.Chat) error {
 		return queryResult.Error
 	}
 
+	return nil
+}
+
+func (c *Chat) Delete(target *entity.Chat) error {
 	return nil
 }

@@ -8,17 +8,21 @@ import (
 
 	"github.com/konnovK/superchat/internal/entity"
 	"github.com/konnovK/superchat/internal/usecase"
+	"github.com/konnovK/superchat/internal/utils"
+	"github.com/konnovK/superchat/internal/workers"
 
 	"gorm.io/gorm"
 )
 
 type ChatGateway struct {
 	ChatDTO usecase.ChatDTO
+	Worker  *workers.Worker
 }
 
-func NewChatGateway(db *gorm.DB) *ChatGateway {
+func NewChatGateway(db *gorm.DB, worker *workers.Worker) *ChatGateway {
 	return &ChatGateway{
 		ChatDTO: usecase.NewChatContent(db),
+		Worker:  worker,
 	}
 }
 
@@ -37,7 +41,10 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 // @Failure 500
 // @Router /chat/active [get]
 func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
-	chats := entity.GetActiveChatsResponse{}
+	chats, err := g.ChatDTO.GetActiveChats()
+	if err != nil {
+		utils.JSONError(w, err, http.StatusInternalServerError)
+	}
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(chats)
 }
@@ -72,7 +79,11 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 // @Failure 500
 // @Router /chat [post]
 func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
+	// TODO: create chat
 	chat := entity.ChatResponse{}
+
+	g.Worker.SetJobTimer(int64(chat.TTL), int(chat.ID))
+
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(chat)
 }
