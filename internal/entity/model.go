@@ -14,14 +14,14 @@ type Chat struct {
 }
 type Chats []Chat
 
-func (c Chats) ToChatResponse(chatLastMessages []Message) GetActiveChatsResponse {
+func (c Chats) ToChatResponse(chatLastMessages Messages) GetActiveChatsResponse {
 	var response GetActiveChatsResponse
 	for _, v := range c {
 		var tags []string
 		for _, tag := range v.Tags {
 			tags = append(tags, tag.Title)
 		}
-		messages := []MessageResponse{} // chatLastMessages -> []MessageResponse
+		messages := chatLastMessages.ToMessageResponce()
 		response = append(response, ChatResponse{
 			ID:          v.ID,
 			Title:       v.Title,
@@ -39,6 +39,20 @@ type Message struct {
 	Sender  string
 	Message string
 	ChatID  uint
+}
+type Messages []Message
+
+func (m Messages) ToMessageResponce() []MessageResponse {
+	var response []MessageResponse
+	for _, message := range m {
+		var mr MessageResponse
+		mr.Sender = message.Sender
+		mr.Message = message.Message
+		mr.SentAt = message.CreatedAt
+		response = append(response, mr)
+	}
+
+	return response
 }
 
 type Tag struct {
