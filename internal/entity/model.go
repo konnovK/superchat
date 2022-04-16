@@ -45,3 +45,4 @@ type Tag struct {
 	gorm.Model
 	Title string
 }
+type Tags []Tag
