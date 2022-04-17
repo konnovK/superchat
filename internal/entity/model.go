@@ -21,7 +21,7 @@ func (c Chats) ToChatResponse(chatLastMessages Messages) GetActiveChatsResponse 
 		for _, tag := range v.Tags {
 			tags = append(tags, tag.Title)
 		}
-		messages := chatLastMessages.ToMessageResponce()
+		messages := chatLastMessages.ToMessageResponse()
 		response = append(response, ChatResponse{
 			ID:          v.ID,
 			Title:       v.Title,
@@ -42,7 +42,7 @@ type Message struct {
 }
 type Messages []Message
 
-func (m Messages) ToMessageResponce() []MessageResponse {
+func (m Messages) ToMessageResponse() []MessageResponse {
 	var response []MessageResponse
 	for _, message := range m {
 		var mr MessageResponse
