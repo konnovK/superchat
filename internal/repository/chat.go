@@ -56,5 +56,11 @@ func (c *Chat) Update(conditions *entity.Chat, target *entity.Chat) error {
 }
 
 func (c *Chat) Delete(target *entity.Chat) error {
+	queryResult := c.db.Where(&target).Delete(&target)
+
+	if queryResult.Error != nil {
+		return queryResult.Error
+	}
+
 	return nil
 }
