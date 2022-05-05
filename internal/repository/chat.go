@@ -17,7 +17,7 @@ type Chat struct {
 	db *gorm.DB
 }
 
-func NewChatRepository(db *gorm.DB) *Chat {
+func NewChatRepository(db *gorm.DB) ChatRepository {
 	return &Chat{
 		db: db,
 	}
