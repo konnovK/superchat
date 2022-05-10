@@ -28,6 +28,8 @@ func NewChatGateway(db *gorm.DB, worker *workers.Worker) *ChatGateway {
 
 func (g *ChatGateway) InitHandlers(r *mux.Router) {
 	r.HandleFunc("/chat/active", g.GetActiveChats).Methods("GET")
+
+	r.HandleFunc("/chat", g.CreateChat).Methods("POST")
 }
 
 // GetActiveChats godoc
@@ -79,13 +81,19 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 // @Failure 500
 // @Router /chat [post]
 func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
-	// TODO: create chat
-	chat := entity.ChatResponse{}
+	createChatRequest := entity.CreateChatRequest{}
+	json.NewDecoder(r.Body).Decode(&createChatRequest)
+	// FIXME: validate chatRequest
 
-	g.Worker.SetJobTimer(int64(chat.TTL), int(chat.ID))
+	chatResponce, err := g.ChatDTO.CreateChat(createChatRequest)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusInternalServerError)
+	}
+
+	g.Worker.SetJobTimer(int64(chatResponce.TTL), int(chatResponce.ID))
 
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(chat)
+	json.NewEncoder(w).Encode(chatResponce)
 }
 
 // SendMessage godoc

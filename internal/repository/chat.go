@@ -30,6 +30,7 @@ func (c *Chat) Find(conditions *entity.Chat) (entity.Chats, error) {
 	if queryResult.Error != nil {
 		return chats, queryResult.Error
 	}
+	//FIXME: Chat.Tags is always == []
 
 	return chats, nil
 }

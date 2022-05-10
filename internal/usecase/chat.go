@@ -7,26 +7,41 @@ import (
 )
 
 type ChatDTO interface {
-	GetActiveChats() (*entity.GetActiveChatsResponse, error)
+	GetActiveChats() (entity.GetActiveChatsResponse, error)
+
+	CreateChat(entity.CreateChatRequest) (entity.CreateChatResponse, error)
 }
 type ChatContent struct {
-	repository repository.ChatRepository
-	// TODO: message repository and chat repository
+	chatRepository    repository.ChatRepository
+	messageRepository repository.MessageRepository
 }
 
-func NewChatContent(db *gorm.DB) *ChatContent {
+func NewChatContent(db *gorm.DB) ChatDTO {
 	return &ChatContent{
-		repository: repository.NewChatRepository(db),
-		// TODO: create message repository and chat repository
+		chatRepository:    repository.NewChatRepository(db),
+		messageRepository: repository.NewMessageRepository(db),
 	}
 }
 
-func (c *ChatContent) GetActiveChats() (*entity.GetActiveChatsResponse, error) {
-	chats, err := c.repository.FindAll()
+func (c *ChatContent) GetActiveChats() (entity.GetActiveChatsResponse, error) {
+	chats, err := c.chatRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
 	messages := []entity.Message{} // From messages repository
 	chatResponse := chats.ToChatResponse(messages)
-	return &chatResponse, nil
+	return chatResponse, nil
+}
+
+func (c *ChatContent) CreateChat(request entity.CreateChatRequest) (entity.CreateChatResponse, error) {
+	chat := request.ToChat()
+
+	err := c.chatRepository.Create(&chat)
+	if err != nil {
+		return entity.CreateChatResponse{}, err
+	}
+
+	response := chat.ToCreateChatResponce()
+
+	return response, nil
 }
