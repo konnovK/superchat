@@ -26,9 +26,7 @@ func NewChatRepository(db *gorm.DB) ChatRepository {
 func (c *Chat) Find(conditions *entity.Chat) (entity.Chats, error) {
 	chats := []entity.Chat{}
 
-	queryResult := c.db.Where(conditions).Find(&chats)
-	//FIXME: Chat.Tags is always == []
-	// TODO: add Association Mode
+	queryResult := c.db.Preload("Tags").Where(conditions).Find(&chats)
 	if queryResult.Error != nil {
 		return chats, queryResult.Error
 	}
