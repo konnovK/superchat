@@ -1,60 +1,37 @@
 package entity
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/http"
+
+	"github.com/konnovK/superchat/internal/utils"
 )
 
-type ValidatedField struct {
-	Name  string
-	Error string
-}
-
-type ValidatedFields []ValidatedField
-
-func (fields ValidatedFields) ValidationError(w http.ResponseWriter) error {
-	if len(fields) == 0 {
-		return nil
-	}
-
-	js, _ := json.Marshal(struct {
-		Error  string          `json:"error"`
-		Fields ValidatedFields `json:"fields"`
-	}{
-		Error:  "validation",
-		Fields: fields,
-	})
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write(js)
-
-	return fmt.Errorf("validation error")
-}
-
-func (ccr *CreateChatRequest) Validate(w http.ResponseWriter) error {
-	fields := ValidatedFields{}
+func (ccr *CreateChatRequest) Validate() (*utils.ValidationFields, error) {
+	fields := utils.ValidationFields{}
 
 	if ccr.Title == "" {
-		fields = append(fields, ValidatedField{
+		fields = append(fields, utils.ValidationField{
 			Name:  "title",
 			Error: "field shouldn't be empty",
 		})
 	}
 
 	if ccr.Creator == "" {
-		fields = append(fields, ValidatedField{
+		fields = append(fields, utils.ValidationField{
 			Name:  "creator",
 			Error: "field shouldn't be empty",
 		})
 	}
 
 	if ccr.TTL == 0 {
-		fields = append(fields, ValidatedField{
+		fields = append(fields, utils.ValidationField{
 			Name:  "ttl",
 			Error: "field shouldn't be empty",
 		})
 	}
 
-	return fields.ValidationError(w)
+	if len(fields) == 0 {
+		return &fields, nil
+	}
+	return &fields, fmt.Errorf("validation error")
 }

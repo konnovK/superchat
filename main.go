@@ -6,6 +6,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
 	"github.com/konnovK/superchat/internal/handlers/gateways"
+	"github.com/konnovK/superchat/internal/migrations"
 	"github.com/konnovK/superchat/internal/utils"
 	"github.com/konnovK/superchat/internal/workers"
 )
@@ -26,6 +27,11 @@ func main() {
 	}
 
 	db, err := utils.InitDbSession(config.DbHost, config.DbUser, config.DbPassword, config.DbName, config.DbPort)
+	if err != nil {
+		panic(err)
+	}
+
+	err = migrations.Migrate(db)
 	if err != nil {
 		panic(err)
 	}

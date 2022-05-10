@@ -84,8 +84,9 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 	createChatRequest := entity.CreateChatRequest{}
 	json.NewDecoder(r.Body).Decode(&createChatRequest)
-	err := createChatRequest.Validate(w)
+	validation, err := createChatRequest.Validate()
 	if err != nil {
+		utils.ValidationError(w, validation, err)
 		return
 	}
 
