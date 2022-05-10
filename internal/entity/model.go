@@ -57,6 +57,6 @@ func (m Messages) ToMessageResponse() []MessageResponse {
 
 type Tag struct {
 	gorm.Model
-	Title string
+	Title string `gorm:"unique"`
 }
 type Tags []Tag

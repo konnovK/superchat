@@ -14,12 +14,14 @@ type ChatDTO interface {
 type ChatContent struct {
 	chatRepository    repository.ChatRepository
 	messageRepository repository.MessageRepository
+	tagRepository     repository.TagRepository
 }
 
 func NewChatContent(db *gorm.DB) ChatDTO {
 	return &ChatContent{
 		chatRepository:    repository.NewChatRepository(db),
 		messageRepository: repository.NewMessageRepository(db),
+		tagRepository:     repository.NewTagRepository(db),
 	}
 }
 
@@ -36,7 +38,13 @@ func (c *ChatContent) GetActiveChats() (entity.GetActiveChatsResponse, error) {
 func (c *ChatContent) CreateChat(request entity.CreateChatRequest) (entity.CreateChatResponse, error) {
 	chat := request.ToChat()
 
-	// TODO: создать теги, если их еще нет ()
+	tags := []entity.Tag{}
+	for _, tag := range chat.Tags {
+		c.tagRepository.Create(&tag)
+		tags = append(tags, tag)
+	}
+	chat.Tags = tags
+
 	err := c.chatRepository.Create(chat)
 	if err != nil {
 		return entity.CreateChatResponse{}, err

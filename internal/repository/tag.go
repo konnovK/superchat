@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/konnovK/superchat/internal/entity"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type TagRepository interface {
@@ -39,7 +40,7 @@ func (t *Tag) FindAll() (entity.Tags, error) {
 }
 
 func (t *Tag) Create(target *entity.Tag) error {
-	queryResult := t.db.Omit("ID").Create(&target)
+	queryResult := t.db.Clauses(clause.OnConflict{Columns: []clause.Column{{Name: "title"}}, UpdateAll: true}).Omit("ID").Create(&target)
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}

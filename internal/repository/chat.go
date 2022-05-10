@@ -40,8 +40,6 @@ func (c *Chat) FindAll() (entity.Chats, error) {
 
 func (c *Chat) Create(target *entity.Chat) error {
 	queryResult := c.db.Omit("ID").Create(&target)
-	// FIXME: каждый раз Tag создаются новые
-	// TODO: посмотреть в документации gorm как создавать эту штуку со связями и как разбираться с конфликтами
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}
