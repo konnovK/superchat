@@ -17,7 +17,7 @@ type Tag struct {
 	db *gorm.DB
 }
 
-func NewTagRepository(db *gorm.DB) *Tag {
+func NewTagRepository(db *gorm.DB) TagRepository {
 	return &Tag{
 		db: db,
 	}
