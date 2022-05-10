@@ -6,7 +6,7 @@ import (
 
 type Chat struct {
 	gorm.Model
-	Title    string
+	Title    string `gorm:"unique"`
 	Creator  string
 	TTL      int
 	Tags     []Tag `gorm:"many2many:chats_tags;"`

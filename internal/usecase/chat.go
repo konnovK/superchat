@@ -36,6 +36,7 @@ func (c *ChatContent) GetActiveChats() (entity.GetActiveChatsResponse, error) {
 func (c *ChatContent) CreateChat(request entity.CreateChatRequest) (entity.CreateChatResponse, error) {
 	chat := request.ToChat()
 
+	// TODO: создать теги, если их еще нет ()
 	err := c.chatRepository.Create(&chat)
 	if err != nil {
 		return entity.CreateChatResponse{}, err

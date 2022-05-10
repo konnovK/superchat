@@ -46,6 +46,7 @@ func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 	chats, err := g.ChatDTO.GetActiveChats()
 	if err != nil {
 		utils.JSONError(w, err, http.StatusInternalServerError)
+		return
 	}
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(chats)
@@ -83,11 +84,12 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 	createChatRequest := entity.CreateChatRequest{}
 	json.NewDecoder(r.Body).Decode(&createChatRequest)
-	// FIXME: validate chatRequest
+	// FIXME: validate chatRequest ( сделать функцию отдельную руками createChatRequest.Validate() )
 
 	chatResponce, err := g.ChatDTO.CreateChat(createChatRequest)
 	if err != nil {
 		utils.JSONError(w, err, http.StatusInternalServerError)
+		return
 	}
 
 	g.Worker.SetJobTimer(int64(chatResponce.TTL), int(chatResponce.ID))

@@ -27,10 +27,11 @@ func (c *Chat) Find(conditions *entity.Chat) (entity.Chats, error) {
 	chats := []entity.Chat{}
 
 	queryResult := c.db.Where(conditions).Find(&chats)
+	//FIXME: Chat.Tags is always == []
+	// TODO: add Association Mode
 	if queryResult.Error != nil {
 		return chats, queryResult.Error
 	}
-	//FIXME: Chat.Tags is always == []
 
 	return chats, nil
 }
@@ -41,6 +42,8 @@ func (c *Chat) FindAll() (entity.Chats, error) {
 
 func (c *Chat) Create(target *entity.Chat) error {
 	queryResult := c.db.Omit("ID").Create(&target)
+	// FIXME: каждый раз Tag создаются новые
+	// TODO: посмотреть в документации gorm как создавать эту штуку со связями и как разбираться с конфликтами
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}

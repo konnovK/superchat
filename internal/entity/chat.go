@@ -28,7 +28,7 @@ type CreateChatRequest struct {
 	Tags    []string
 }
 
-func (ccr CreateChatRequest) ToChat() Chat {
+func (ccr *CreateChatRequest) ToChat() Chat {
 	tags := []Tag{}
 	for _, t := range ccr.Tags {
 		tags = append(tags, Tag{
@@ -40,7 +40,7 @@ func (ccr CreateChatRequest) ToChat() Chat {
 		Title:   ccr.Title,
 		Creator: ccr.Creator,
 		TTL:     ccr.TTL,
-		Tags: tags,
+		Tags:    tags,
 	}
 }
 
@@ -50,11 +50,11 @@ type SendMessageRequest struct {
 }
 
 type CreateChatResponse struct {
-	ID          uint
-	Title       string
-	Creator     string
-	TTL         int
-	Tags        []string
+	ID           uint
+	Title        string
+	Creator      string
+	TTL          int
+	Tags         []string
 	LastMessages []MessageResponse
 }
 func (c Chat) ToCreateChatResponce() CreateChatResponse {
@@ -66,11 +66,11 @@ func (c Chat) ToCreateChatResponce() CreateChatResponse {
 	}
 
 	ccr := CreateChatResponse{
-		ID: c.ID,
-		Title: c.Title,
-		Creator: c.Creator,
-		TTL: c.TTL,
-		Tags: tags,
+		ID:           c.ID,
+		Title:        c.Title,
+		Creator:      c.Creator,
+		TTL:          c.TTL,
+		Tags:         tags,
 		LastMessages: messages,
 	}
 	return ccr
