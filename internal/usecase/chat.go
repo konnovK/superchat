@@ -17,7 +17,7 @@ type ChatContent struct {
 	tagRepository     repository.TagRepository
 }
 
-func NewChatContent(db *gorm.DB) ChatDTO {
+func NewChatDTO(db *gorm.DB) ChatDTO {
 	return &ChatContent{
 		chatRepository:    repository.NewChatRepository(db),
 		messageRepository: repository.NewMessageRepository(db),

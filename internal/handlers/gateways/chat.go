@@ -21,7 +21,7 @@ type ChatGateway struct {
 
 func NewChatGateway(db *gorm.DB, worker *workers.Worker) *ChatGateway {
 	return &ChatGateway{
-		ChatDTO: usecase.NewChatContent(db),
+		ChatDTO: usecase.NewChatDTO(db),
 		Worker:  worker,
 	}
 }
