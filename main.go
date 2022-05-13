@@ -9,6 +9,8 @@ import (
 	"github.com/konnovK/superchat/internal/migrations"
 	"github.com/konnovK/superchat/internal/utils"
 	"github.com/konnovK/superchat/internal/workers"
+	httpSwagger "github.com/swaggo/http-swagger"
+	_ "github.com/konnovK/superchat/docs"
 )
 
 var redisPool = &redis.Pool{
@@ -39,6 +41,8 @@ func main() {
 	worker := workers.NewWorker(redisPool)
 
 	r := mux.NewRouter()
+
+	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 
 	gw := gateways.NewChatGateway(db, worker)
 	gw.InitHandlers(r)
