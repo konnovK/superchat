@@ -3,6 +3,7 @@ package gateways
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 
@@ -30,6 +31,10 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 	r.HandleFunc("/chat/active", g.GetActiveChats).Methods("GET")
 
 	r.HandleFunc("/chat", g.CreateChat).Methods("POST")
+
+	r.HandleFunc("/chat/{id}/message", g.GetMessagesByChatId).Methods("GET")
+
+	r.HandleFunc("/chat/{id}/message", g.SendMessage).Methods("POST")
 }
 
 // GetActiveChats godoc
@@ -64,7 +69,19 @@ func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 // @Failure 500
 // @Router /chat/{id}/message [get]
 func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request) {
-	messages := entity.GetMessagesByChatIdResponse{}
+	idFromUrl := mux.Vars(r)["id"]
+	chatId, err := strconv.Atoi(idFromUrl)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	messages, err := g.ChatDTO.GetMessagesByChatId(chatId)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(messages)
 }
@@ -115,7 +132,27 @@ func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 // @Failure 500
 // @Router /chat/{id}/message [post]
 func (g *ChatGateway) SendMessage(w http.ResponseWriter, r *http.Request) {
-	message := entity.MessageResponse{}
+	idFromUrl := mux.Vars(r)["id"]
+	chatId, err := strconv.Atoi(idFromUrl)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	sendMessageRequest := entity.SendMessageRequest{}
+	json.NewDecoder(r.Body).Decode(&sendMessageRequest)
+	validation, err := sendMessageRequest.Validate()
+	if err != nil {
+		utils.ValidationError(w, validation, err)
+		return
+	}
+
+	messages, err := g.ChatDTO.SendMessage(chatId, sendMessageRequest)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusBadRequest)
+		return
+	}
+
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(message)
+	json.NewEncoder(w).Encode(messages)
 }

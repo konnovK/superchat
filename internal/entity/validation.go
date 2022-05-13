@@ -35,3 +35,26 @@ func (ccr *CreateChatRequest) Validate() (*utils.ValidationFields, error) {
 	}
 	return &fields, fmt.Errorf("validation error")
 }
+
+func (smr *SendMessageRequest) Validate() (*utils.ValidationFields, error) {
+	fields := utils.ValidationFields{}
+
+	if smr.Sender == "" {
+		fields = append(fields, utils.ValidationField{
+			Name:  "sender",
+			Error: "field shouldn't be empty",
+		})
+	}
+
+	if smr.Message == "" {
+		fields = append(fields, utils.ValidationField{
+			Name:  "message",
+			Error: "field shouldn't be empty",
+		})
+	}
+
+	if len(fields) == 0 {
+		return &fields, nil
+	}
+	return &fields, fmt.Errorf("validation error")
+}
