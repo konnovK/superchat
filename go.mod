@@ -4,14 +4,19 @@ go 1.18
 
 require (
 	github.com/gorilla/mux v1.8.0
+	github.com/swaggo/http-swagger v1.2.8
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.3
 )
 
 require (
+	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
+	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/k-yomo/fixtory v0.1.2 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
-	github.com/swaggo/http-swagger v1.2.8 // indirect
+	github.com/urfave/cli/v2 v2.6.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )

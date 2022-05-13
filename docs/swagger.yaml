@@ -20,7 +20,7 @@ definitions:
     type: object
   entity.CreateChatRequest:
     properties:
-      author:
+      creator:
         type: string
       tags:
         items:
