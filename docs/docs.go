@@ -48,13 +48,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": ""
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ValidationErrorStruct"
+                        }
                     },
                     "404": {
                         "description": ""
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     }
                 }
             }
@@ -86,7 +92,10 @@ const docTemplate = `{
                         "description": ""
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     }
                 }
             }
@@ -124,10 +133,16 @@ const docTemplate = `{
                         "description": ""
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     }
                 }
             },
@@ -166,13 +181,22 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": ""
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ValidationErrorStruct"
+                        }
                     },
                     "404": {
-                        "description": ""
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     },
                     "500": {
-                        "description": ""
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.JSONErrorStruct"
+                        }
                     }
                 }
             }
@@ -249,6 +273,39 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sender": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.JSONErrorStruct": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.ValidationErrorStruct": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/utils.ValidationField"
+                    }
+                }
+            }
+        },
+        "utils.ValidationField": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

@@ -47,6 +47,27 @@ definitions:
       sender:
         type: string
     type: object
+  utils.JSONErrorStruct:
+    properties:
+      error:
+        type: string
+    type: object
+  utils.ValidationErrorStruct:
+    properties:
+      error:
+        type: string
+      fields:
+        items:
+          $ref: '#/definitions/utils.ValidationField'
+        type: array
+    type: object
+  utils.ValidationField:
+    properties:
+      error:
+        type: string
+      name:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -70,11 +91,15 @@ paths:
           schema:
             $ref: '#/definitions/entity.ChatResponse'
         "400":
-          description: ""
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ValidationErrorStruct'
         "404":
           description: ""
         "500":
-          description: ""
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
       summary: Create new chat
       tags:
       - chat
@@ -99,9 +124,13 @@ paths:
         "400":
           description: ""
         "404":
-          description: ""
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
         "500":
-          description: ""
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
       summary: Get all messages in chat
       tags:
       - chat
@@ -127,11 +156,17 @@ paths:
           schema:
             $ref: '#/definitions/entity.MessageResponse'
         "400":
-          description: ""
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ValidationErrorStruct'
         "404":
-          description: ""
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
         "500":
-          description: ""
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
       summary: Send message to chat
       tags:
       - chat
@@ -152,7 +187,9 @@ paths:
         "404":
           description: ""
         "500":
-          description: ""
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.JSONErrorStruct'
       summary: Get active chats
       tags:
       - chat

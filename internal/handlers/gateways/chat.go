@@ -45,7 +45,7 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 // @Success 200 {object} entity.GetActiveChatsResponse
 // @Failure 400
 // @Failure 404
-// @Failure 500
+// @Failure 500 {object} utils.JSONErrorStruct
 // @Router /chat/active [get]
 func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 	chats, err := g.ChatDTO.GetActiveChats()
@@ -65,8 +65,8 @@ func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 // @Param        id   path      int  true  "Chat ID"
 // @Success 200 {object} entity.GetMessagesByChatIdResponse
 // @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 404 {object} utils.JSONErrorStruct
+// @Failure 500 {object} utils.JSONErrorStruct
 // @Router /chat/{id}/message [get]
 func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request) {
 	idFromUrl := mux.Vars(r)["id"]
@@ -78,7 +78,7 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 
 	messages, err := g.ChatDTO.GetMessagesByChatId(chatId)
 	if err != nil {
-		utils.JSONError(w, err, http.StatusBadRequest)
+		utils.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -94,9 +94,9 @@ func (g *ChatGateway) GetMessagesByChatId(w http.ResponseWriter, r *http.Request
 // @Produce json
 // @Param chat body entity.CreateChatRequest true "Create chat"
 // @Success 200 {object} entity.ChatResponse
-// @Failure 400
+// @Failure 400 {object} utils.ValidationErrorStruct
 // @Failure 404
-// @Failure 500
+// @Failure 500 {object} utils.JSONErrorStruct
 // @Router /chat [post]
 func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 	createChatRequest := entity.CreateChatRequest{}
@@ -127,15 +127,15 @@ func (g *ChatGateway) CreateChat(w http.ResponseWriter, r *http.Request) {
 // @Param        id   path      int  true  "Chat ID"
 // @Param message body entity.SendMessageRequest true "Send message"
 // @Success 200 {object} entity.MessageResponse
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} utils.ValidationErrorStruct
+// @Failure 404 {object} utils.JSONErrorStruct
+// @Failure 500 {object} utils.JSONErrorStruct
 // @Router /chat/{id}/message [post]
 func (g *ChatGateway) SendMessage(w http.ResponseWriter, r *http.Request) {
 	idFromUrl := mux.Vars(r)["id"]
 	chatId, err := strconv.Atoi(idFromUrl)
 	if err != nil {
-		utils.JSONError(w, err, http.StatusBadRequest)
+		utils.JSONError(w, err, http.StatusNotFound)
 		return
 	}
 
@@ -149,7 +149,7 @@ func (g *ChatGateway) SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	messages, err := g.ChatDTO.SendMessage(chatId, sendMessageRequest)
 	if err != nil {
-		utils.JSONError(w, err, http.StatusBadRequest)
+		utils.JSONError(w, err, http.StatusInternalServerError)
 		return
 	}
 
