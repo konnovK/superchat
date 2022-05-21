@@ -49,6 +49,14 @@ type SendMessageRequest struct {
 	Message string
 }
 
+func (smr *SendMessageRequest) ToMessage(chatId uint) *Message {
+	return &Message{
+		Sender:  smr.Sender,
+		Message: smr.Message,
+		ChatID:  chatId,
+	}
+}
+
 type CreateChatResponse struct {
 	ID           uint
 	Title        string

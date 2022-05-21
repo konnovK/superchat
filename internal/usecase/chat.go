@@ -10,6 +10,10 @@ type ChatDTO interface {
 	GetActiveChats() (entity.GetActiveChatsResponse, error)
 
 	CreateChat(entity.CreateChatRequest) (entity.CreateChatResponse, error)
+
+	GetMessagesByChatId(int) (entity.GetMessagesByChatIdResponse, error)
+
+	SendMessage(int, entity.SendMessageRequest) (entity.MessageResponse, error)
 }
 type ChatContent struct {
 	chatRepository    repository.ChatRepository
@@ -30,9 +34,16 @@ func (c *ChatContent) GetActiveChats() (entity.GetActiveChatsResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	messages := []entity.Message{} // From messages repository
-	chatResponse := chats.ToChatResponse(messages)
-	return chatResponse, nil
+	chatsResponse := entity.GetActiveChatsResponse{}
+	for _, chat := range chats {
+		// lastMessages := []entity.Message{}
+		lastMessages, err := c.messageRepository.FindLastMessagesByChatId(chat.ID)
+		if err != nil {
+			return nil, err
+		}
+		chatsResponse = append(chatsResponse, chat.ToChatResponse(lastMessages))
+	}
+	return chatsResponse, nil
 }
 
 func (c *ChatContent) CreateChat(request entity.CreateChatRequest) (entity.CreateChatResponse, error) {
@@ -53,4 +64,22 @@ func (c *ChatContent) CreateChat(request entity.CreateChatRequest) (entity.Creat
 	response := chat.ToCreateChatResponce()
 
 	return response, nil
+}
+
+func (c *ChatContent) GetMessagesByChatId(chatId int) (entity.GetMessagesByChatIdResponse, error) {
+	messages, err := c.messageRepository.Find(&entity.Message{ChatID: uint(chatId)})
+	if err != nil {
+		return nil, err
+	}
+	messageResponce := messages.ToMessageResponse()
+	return messageResponce, nil
+}
+
+func (c *ChatContent) SendMessage(chatId int, messageRequest entity.SendMessageRequest) (entity.MessageResponse, error) {
+	message := messageRequest.ToMessage(uint(chatId))
+	err := c.messageRepository.Create(message)
+	if err != nil {
+		return entity.MessageResponse{}, err
+	}
+	return message.ToMessageResponse(), nil
 }

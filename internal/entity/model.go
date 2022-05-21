@@ -12,6 +12,24 @@ type Chat struct {
 	Tags     []Tag `gorm:"many2many:chats_tags;"`
 	Messages []Message
 }
+
+func (c *Chat) ToChatResponse(chatLastMessages Messages) ChatResponse {
+	tags := []string{}
+	for _, tag := range c.Tags {
+		tags = append(tags, tag.Title)
+	}
+
+	response := ChatResponse{
+		ID:          c.ID,
+		Title:       c.Title,
+		Creator:     c.Creator,
+		TTL:         c.TTL,
+		Tags:        tags,
+		LastMessage: chatLastMessages.ToMessageResponse(),
+	}
+	return response
+}
+
 type Chats []Chat
 
 func (c Chats) ToChatResponse(chatLastMessages Messages) GetActiveChatsResponse {
@@ -40,6 +58,15 @@ type Message struct {
 	Message string
 	ChatID  uint
 }
+
+func (m *Message) ToMessageResponse() MessageResponse {
+	return MessageResponse{
+		Sender:  m.Sender,
+		Message: m.Message,
+		SentAt:  m.CreatedAt,
+	}
+}
+
 type Messages []Message
 
 func (m Messages) ToMessageResponse() []MessageResponse {

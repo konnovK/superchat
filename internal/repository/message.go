@@ -8,6 +8,7 @@ import (
 type MessageRepository interface {
 	Find(conditions *entity.Message) (entity.Messages, error)
 	FindAll() (entity.Messages, error)
+	FindLastMessagesByChatId(uint) (entity.Messages, error)
 	Create(target *entity.Message) error
 	Update(conditions *entity.Message, target *entity.Message) error
 	Delete(target *entity.Message) error
@@ -26,7 +27,7 @@ func NewMessageRepository(db *gorm.DB) MessageRepository {
 func (m *Message) Find(conditions *entity.Message) (entity.Messages, error) {
 	message := []entity.Message{}
 
-	queryResult := m.db.Where(conditions).Find(&message)
+	queryResult := m.db.Where(conditions).Order("created_at desc").Find(&message)
 	if queryResult.Error != nil {
 		return message, queryResult.Error
 	}
@@ -36,6 +37,17 @@ func (m *Message) Find(conditions *entity.Message) (entity.Messages, error) {
 
 func (m *Message) FindAll() (entity.Messages, error) {
 	return m.Find(&entity.Message{})
+}
+
+func (m *Message) FindLastMessagesByChatId(chatId uint) (entity.Messages, error) {
+	message := []entity.Message{}
+
+	queryResult := m.db.Where(&entity.Message{ChatID: chatId}).Limit(2).Order("created_at desc").Find(&message)
+	if queryResult.Error != nil {
+		return message, queryResult.Error
+	}
+
+	return message, nil
 }
 
 func (m *Message) Create(target *entity.Message) error {
