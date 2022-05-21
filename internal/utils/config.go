@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -16,10 +15,7 @@ type Config struct {
 }
 
 func NewConfig() (*Config, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return nil, fmt.Errorf("error loading .env file")
-	}
+	godotenv.Load()
 
 	dbUser := os.Getenv("CHAT_DB_USER")
 	dbPassword := os.Getenv("CHAT_DB_PASSWORD")
