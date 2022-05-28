@@ -47,6 +47,9 @@ func main() {
 	gw := gateways.NewChatGateway(db, worker)
 	gw.InitHandlers(r)
 
+	socketGw := gateways.NewSocketGateway(db)
+	socketGw.InitHandlers(r)
+
 	http.Handle("/", r)
 	http.ListenAndServe(":8082", nil)
 }
