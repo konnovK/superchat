@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 
 	"github.com/konnovK/superchat/internal/entity"
 	"github.com/konnovK/superchat/internal/usecase"
@@ -18,12 +19,30 @@ import (
 type ChatGateway struct {
 	ChatDTO usecase.ChatDTO
 	Worker  *workers.Worker
+
+	SendedMessage chan entity.MessageResponse
+	WebSocket     struct {
+		Upgrader websocket.Upgrader
+		Clients  map[int](map[*websocket.Conn]bool) // FIXME: наверное эта штука может занимать очень много места
+	}
 }
 
 func NewChatGateway(db *gorm.DB, worker *workers.Worker) *ChatGateway {
 	return &ChatGateway{
-		ChatDTO: usecase.NewChatDTO(db),
-		Worker:  worker,
+		ChatDTO:       usecase.NewChatDTO(db),
+		Worker:        worker,
+		SendedMessage: make(chan entity.MessageResponse, 1),
+		WebSocket: struct {
+			Upgrader websocket.Upgrader
+			Clients  map[int](map[*websocket.Conn]bool)
+		}{
+			Upgrader: websocket.Upgrader{ // FIXME: наверное Upgrader нужно создавать в другом месте
+				CheckOrigin: func(r *http.Request) bool {
+					return true
+				},
+			},
+			Clients: make(map[int](map[*websocket.Conn]bool), 0),
+		},
 	}
 }
 
@@ -35,6 +54,8 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 	r.HandleFunc("/chat/{id}/message", g.GetMessagesByChatId).Methods("GET")
 
 	r.HandleFunc("/chat/{id}/message", g.SendMessage).Methods("POST")
+
+	r.HandleFunc("/chat/{id}", g.ChatSocket)
 }
 
 // GetActiveChats godoc
@@ -155,4 +176,39 @@ func (g *ChatGateway) SendMessage(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(messages)
+	
+	g.SendedMessage <- messages
+}
+
+func (g *ChatGateway) ChatSocket(w http.ResponseWriter, r *http.Request) {
+	idFromUrl := mux.Vars(r)["id"]
+	chatId, err := strconv.Atoi(idFromUrl)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusNotFound)
+		return
+	}
+
+	connection, err := g.WebSocket.Upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		utils.JSONError(w, err, http.StatusInternalServerError)
+		return
+	}
+	defer connection.Close()
+
+	// Запоминаем, что чел connection подключился к чату chatID
+	if g.WebSocket.Clients[chatId] == nil {
+		g.WebSocket.Clients[chatId] = make(map[*websocket.Conn]bool, 0)
+	}
+	g.WebSocket.Clients[chatId][connection] = true
+	// если чел connection отключился от чата chatID, то удаляем его
+	defer delete(g.WebSocket.Clients[chatId], connection)
+
+	for {
+		messageResponses := <-g.SendedMessage
+		msg, _ := json.Marshal(messageResponses)
+		for conn := range g.WebSocket.Clients[chatId] {
+			conn.WriteMessage(websocket.TextMessage, msg)
+		}
+	}
+
 }
