@@ -1,8 +1,5 @@
 name: build-docker-container
-on:
-  release:
-    types:
-      - "published"
+on: [push]
 jobs:
   build-container:
     runs-on: ubuntu-latest
