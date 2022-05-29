@@ -19,13 +19,9 @@ services:
       - CHAT_DB_PORT=5432
       - CHAT_DB_NAME=superchat
       - REDIS_ADDR=cache:6379
-    ports:
-      - "8082:8082"
   cache:
     image: redis:latest
     restart: always
-    ports:
-      - "6379:6379"
     command: redis-server
     volumes:
       - cache:/data
@@ -33,6 +29,16 @@ services:
     image: containrrr/watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./hosts:/etc/nginx/conf.d
+      - ./www:/var/www
+      - ./logs/nginx:/var/log/nginx
+      # TODO redo paths to static files
 volumes:
   pgdb:
   cahce:
