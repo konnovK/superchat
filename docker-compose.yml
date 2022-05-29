@@ -41,4 +41,6 @@ services:
       # TODO redo paths to static files
 volumes:
   pgdb:
+    driver: local
   cahcerw:
+    driver: local
