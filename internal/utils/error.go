@@ -23,11 +23,13 @@ type ValidationField struct {
 
 type ValidationFields []ValidationField
 
+type ValidationErrorStruct struct {
+	Error  string
+	Fields ValidationFields
+}
+
 func ValidationError(w http.ResponseWriter, validation *ValidationFields, e error) {
-	js, _ := json.Marshal(struct {
-		Error  string           `json:"error"`
-		Fields ValidationFields `json:"fields"`
-	}{
+	js, _ := json.Marshal(ValidationErrorStruct{
 		Error:  e.Error(),
 		Fields: *validation,
 	})
