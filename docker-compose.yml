@@ -24,7 +24,7 @@ services:
     restart: always
     command: redis-server
     volumes:
-      - cache:/data
+      - cacherw:/data
   watchtower:
     image: containrrr/watchtower
     volumes:
@@ -41,4 +41,4 @@ services:
       # TODO redo paths to static files
 volumes:
   pgdb:
-  cahce:
+  cahcerw:
