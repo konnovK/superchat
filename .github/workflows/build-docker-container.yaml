@@ -1,8 +1,5 @@
 name: build-docker-container
-on:
-  release:
-    types:
-      - "published"
+on: [push]
 jobs:
   build-container:
     runs-on: ubuntu-latest
@@ -10,11 +7,12 @@ jobs:
       - name: "checkout repo"
         uses: "actions/checkout@v3"
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: "docker login"
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
