@@ -3,24 +3,14 @@ package main
 import (
 	"net/http"
 
-	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
+	_ "github.com/konnovK/superchat/docs"
 	"github.com/konnovK/superchat/internal/handlers/gateways"
 	"github.com/konnovK/superchat/internal/migrations"
 	"github.com/konnovK/superchat/internal/utils"
 	"github.com/konnovK/superchat/internal/workers"
 	httpSwagger "github.com/swaggo/http-swagger"
-	_ "github.com/konnovK/superchat/docs"
 )
-
-var redisPool = &redis.Pool{
-	MaxActive: 5,
-	MaxIdle:   5,
-	Wait:      true,
-	Dial: func() (redis.Conn, error) {
-		return redis.Dial("tcp", ":6379")
-	},
-}
 
 func main() {
 	config, err := utils.NewConfig()
@@ -37,8 +27,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	worker := workers.NewWorker(redisPool)
+	pool, err := utils.NewRedisPool()
+	if err != nil {
+		panic(err)
+	}
+	worker := workers.NewWorker(pool)
 
 	r := mux.NewRouter()
 

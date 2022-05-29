@@ -17,7 +17,7 @@ RUN apk add --no-cache tzdata
 ENV TZ Europe/Moscow
 RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-EXPOSE 80
+EXPOSE 8082
 
 WORKDIR /app/build
 

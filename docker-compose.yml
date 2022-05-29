@@ -1,0 +1,34 @@
+version: "3.3"
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=user12345
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=superchat
+    volumes:
+      - pgdb:/var/lib/postgresql/data
+  superchat:
+    image: konnovk/superchat:main
+    restart: always
+    environment:
+      - CHAT_DB_USER=user12345
+      - CHAT_DB_PASSWORD=12345
+      - CHAT_DB_HOST=db
+      - CHAT_DB_PORT=5432
+      - CHAT_DB_NAME=superchat
+      - REDIS_ADDR=cache:6379
+    ports:
+      - "8082:8082"
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server
+    volumes:
+      - cache:/data
+volumes:
+  pgdb:
+  cahce:
