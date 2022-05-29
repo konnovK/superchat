@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
@@ -23,7 +24,7 @@ type ChatGateway struct {
 	SendedMessage chan entity.MessageResponse
 	WebSocket     struct {
 		Upgrader websocket.Upgrader
-		Clients  map[int](map[*websocket.Conn]bool) // FIXME: наверное эта штука может занимать очень много места
+		Clients  map[int](map[*websocket.Conn]time.Time) // FIXME: наверное эта штука может занимать очень много места
 	}
 }
 
@@ -34,14 +35,14 @@ func NewChatGateway(db *gorm.DB, worker *workers.Worker) *ChatGateway {
 		SendedMessage: make(chan entity.MessageResponse, 1),
 		WebSocket: struct {
 			Upgrader websocket.Upgrader
-			Clients  map[int](map[*websocket.Conn]bool)
+			Clients  map[int](map[*websocket.Conn]time.Time)
 		}{
 			Upgrader: websocket.Upgrader{ // FIXME: наверное Upgrader нужно создавать в другом месте
 				CheckOrigin: func(r *http.Request) bool {
 					return true
 				},
 			},
-			Clients: make(map[int](map[*websocket.Conn]bool), 0),
+			Clients: make(map[int](map[*websocket.Conn]time.Time), 0),
 		},
 	}
 }
@@ -168,16 +169,18 @@ func (g *ChatGateway) SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	messages, err := g.ChatDTO.SendMessage(chatId, sendMessageRequest)
+	message, err := g.ChatDTO.SendMessage(chatId, sendMessageRequest)
 	if err != nil {
 		utils.JSONError(w, err, http.StatusBadRequest)
 		return
 	}
 
+	go func() {
+		g.SendedMessage <- message
+	}()
+
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(messages)
-	
-	g.SendedMessage <- messages
+	json.NewEncoder(w).Encode(message)
 }
 
 func (g *ChatGateway) ChatSocket(w http.ResponseWriter, r *http.Request) {
@@ -197,18 +200,21 @@ func (g *ChatGateway) ChatSocket(w http.ResponseWriter, r *http.Request) {
 
 	// Запоминаем, что чел connection подключился к чату chatID
 	if g.WebSocket.Clients[chatId] == nil {
-		g.WebSocket.Clients[chatId] = make(map[*websocket.Conn]bool, 0)
+		g.WebSocket.Clients[chatId] = make(map[*websocket.Conn]time.Time, 0)
 	}
-	g.WebSocket.Clients[chatId][connection] = true
+	g.WebSocket.Clients[chatId][connection] = time.Now().UTC()
 	// если чел connection отключился от чата chatID, то удаляем его
 	defer delete(g.WebSocket.Clients[chatId], connection)
 
 	for {
 		messageResponses := <-g.SendedMessage
+
 		msg, _ := json.Marshal(messageResponses)
 		for conn := range g.WebSocket.Clients[chatId] {
-			conn.WriteMessage(websocket.TextMessage, msg)
+
+			if g.WebSocket.Clients[chatId][conn].Before(messageResponses.SentAt) {
+				conn.WriteMessage(websocket.TextMessage, msg)
+			}
 		}
 	}
-
 }
