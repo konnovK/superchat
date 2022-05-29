@@ -14,6 +14,7 @@ require (
 	github.com/go-openapi/swag v0.21.1 // indirect
 	github.com/gocraft/work v0.5.1
 	github.com/gomodule/redigo v1.8.8
+	github.com/gorilla/websocket v1.5.0
 	github.com/joho/godotenv v1.4.0
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
