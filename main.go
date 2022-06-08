@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -41,5 +42,6 @@ func main() {
 	gw.InitHandlers(r)
 
 	http.Handle("/", r)
+	log.Println("now listening on port 8082")
 	http.ListenAndServe(":8082", nil)
 }
