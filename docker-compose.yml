@@ -10,7 +10,7 @@ services:
     volumes:
       - pgdb:/var/lib/postgresql/data
   superchat:
-    image: konnovk/superchat:main
+    image: konnovk/superchat
     restart: always
     environment:
       - CHAT_DB_USER=user12345
