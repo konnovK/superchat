@@ -6,7 +6,7 @@ COPY . /app
 
 RUN mkdir build
 RUN apk add git
-RUN go mod download; go build -o /main ./
+RUN go mod tidy; go build -o /main ./
 
 FROM alpine:latest
 USER root
