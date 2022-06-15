@@ -47,6 +47,11 @@ definitions:
       sender:
         type: string
     type: object
+  entity.TagResponse:
+    properties:
+      title:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -156,4 +161,25 @@ paths:
       summary: Get active chats
       tags:
       - chat
+  /tag:
+    get:
+      description: Get all tags at the moment
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.TagResponse'
+            type: array
+        "400":
+          description: ""
+        "404":
+          description: ""
+        "500":
+          description: ""
+      summary: Get all tags
+      tags:
+      - tag
 swagger: "2.0"

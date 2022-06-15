@@ -14,6 +14,8 @@ type ChatDTO interface {
 	GetMessagesByChatId(int) (entity.GetMessagesByChatIdResponse, error)
 
 	SendMessage(int, entity.SendMessageRequest) (entity.MessageResponse, error)
+
+	GetAllTags() ([]entity.TagResponse, error)
 }
 type ChatContent struct {
 	chatRepository    repository.ChatRepository
@@ -82,4 +84,19 @@ func (c *ChatContent) SendMessage(chatId int, messageRequest entity.SendMessageR
 		return entity.MessageResponse{}, err
 	}
 	return message.ToMessageResponse(), nil
+}
+
+func (c *ChatContent) GetAllTags() ([]entity.TagResponse, error) {
+	tagsModel, err := c.tagRepository.FindAll()
+
+	if err != nil {
+		return nil, err
+	}
+
+	tags := []entity.TagResponse{}
+	for _, t := range tagsModel {
+		tags = append(tags, entity.TagResponse{Title: t.Title})
+	}
+
+	return tags, nil
 }

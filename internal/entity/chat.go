@@ -84,3 +84,9 @@ func (c Chat) ToCreateChatResponce() CreateChatResponse {
 	}
 	return ccr
 }
+
+type TagResponse struct {
+	Title string `json:"title"`
+}
+
+type TagsResponse []TagResponse

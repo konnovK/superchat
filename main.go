@@ -11,6 +11,7 @@ import (
 	"github.com/konnovK/superchat/internal/utils"
 	"github.com/konnovK/superchat/internal/workers"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -43,5 +44,11 @@ func main() {
 
 	http.Handle("/", r)
 	log.Println("now listening on port 8082")
-	http.ListenAndServe(":8082", nil)
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowOriginFunc: func(origin string) bool {return true},
+		AllowCredentials: true,
+	})
+	h := c.Handler(r)
+	http.ListenAndServe(":8082", h)
 }

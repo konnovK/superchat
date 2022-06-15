@@ -57,6 +57,8 @@ func (g *ChatGateway) InitHandlers(r *mux.Router) {
 	r.HandleFunc("/chat/{id}/message", g.SendMessage).Methods("POST")
 
 	r.HandleFunc("/chat/{id}", g.ChatSocket)
+
+	r.HandleFunc("/tag", g.GetAllTags).Methods("GET")
 }
 
 // GetActiveChats godoc
@@ -77,6 +79,26 @@ func (g *ChatGateway) GetActiveChats(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(chats)
+}
+
+// GetAllTags godoc
+// @Summary Get all tags
+// @Description Get all tags at the moment
+// @Tags tag
+// @Produce json
+// @Success 200 {object} entity.TagsResponse
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /tag [get]
+func (g *ChatGateway) GetAllTags(w http.ResponseWriter, r *http.Request) {
+	tags, err := g.ChatDTO.GetAllTags()
+	if err != nil {
+		utils.JSONError(w, err, http.StatusInternalServerError)
+		return
+	}
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tags)
 }
 
 // GetMessagesByChatId godoc

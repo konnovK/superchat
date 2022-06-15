@@ -176,6 +176,38 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tag": {
+            "get": {
+                "description": "Get all tags at the moment",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tag"
+                ],
+                "summary": "Get all tags",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.TagResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -249,6 +281,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sender": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.TagResponse": {
+            "type": "object",
+            "properties": {
+                "title": {
                     "type": "string"
                 }
             }
